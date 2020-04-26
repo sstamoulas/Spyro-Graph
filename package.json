@@ -2,9 +2,7 @@
   "name": "Spiro Graph",
   "version": "1.0.0",
   "description": "Simple HTML and Js page having fun with canvas and spiro graphs",
-  "scripts": {
-    "deploy": "gh-pages"
-  },
+  "homepage": "https://sstamoulas.github.io",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sstamoulas/Spyro-Graph.git"
@@ -15,7 +13,4 @@
     "url": "https://github.com/sstamoulas/Spyro-Graph/issues"
   },
   "homepage": "https://github.com/sstamoulas/Spyro-Graph#readme",
-  "dependencies": {
-    "gh-pages": "^2.2.0"
-  }
 }
