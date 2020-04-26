@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+ </head>
+ <body>
+  <input type="text" id="R" value="250" />
+  <input type="text" id="r" value="65" />
+  <input type="text" id="l" value=".8" />
+  <canvas id="canvas" width="900" height="850"></canvas>
+  <p>Move your mouse to see its position.</p>
+  <p id="screen-log"></p>
+  <script>
+    const selectR = document.querySelector('#R');
+    const selectr = document.querySelector('#r');
+    const selectl = document.querySelector('#l');
+    const canvas = document.getElementById('canvas');
+    let default_R = 250
+    let default_r = 65
+    let default_l = 0.8
+
+    canvas.addEventListener('mousedown', function(e) {
+        initializeDraw(canvas, e)
+    })
+
+    selectR.addEventListener('change', (event) => {
+      default_R = event.target.value;
+    });
+
+    selectr.addEventListener('change', (event) => {
+      default_r = event.target.value;
+    });
+
+    selectl.addEventListener('change', (event) => {
+      default_l = event.target.value;
+    });
+
+    function gcd(x, y) {
+      if ((typeof x !== 'number') || (typeof y !== 'number')) 
+        return false;
+      x = Math.abs(x);
+      y = Math.abs(y);
+      while(y) {
+        var t = y;
+        y = x % y;
+        x = t;
+      }
+      return x;
+    }
+    function radians(degrees)
+    {
+      var pi = Math.PI;
+      return degrees * (pi/180);
+    }
+
+    function initializeDraw(canvas, e) {
+      const rect = canvas.getBoundingClientRect()
+      const x = event.clientX - rect.left
+      const y = event.clientY - rect.top
+
+      if (canvas.getContext) {
+        var ctx = canvas.getContext('2d');
+        console.log(x, y)
+        draw(ctx, x, y, 0, default_R, default_r, default_l, 0, 0, 0);
+      }
+    }
+
+    function draw(ctx, xc, yc, i, R, r, l, red, green, blue) {
+      let gcdVal = gcd(r, R)
+      let rotations = r/gcdVal
+      let {x, y, a} = getCoordinates(r, R, i, l)
+
+      ctx.beginPath();
+      ctx.arc(xc + x, yc + y, 5, 0, 2 * Math.PI);
+      // Stroke has nice hollow circles
+      // ctx.strokeStyle = `rgb(${red}, ${green}, ${blue})`;
+      // ctx.stroke();
+      // Fill the circles will smoothness
+      ctx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
+      ctx.fill();
+      // if(l === .9) {
+      //   l = .01
+      // }
+      // else if(l === .01) {
+      //   l = .5
+      // }
+      // else {
+      //   l = .9
+      // }
+
+      if(red < 255) {
+        red += 20
+      }
+      else if(green < 255) {
+        red = 0
+        green += 20
+      }
+      else if(blue < 255) {
+        red = 0
+        green = 0
+        blue += 20
+      }
+      else {
+        red = 0
+        green = 0
+        blue = 0
+
+      }
+
+      if(i < 360*rotations + 1) {
+        setTimeout(function() {draw(ctx, xc, yc, ++i, R, r, l, red, green, blue)}, 2);
+      }
+    }
+
+    function getCoordinates(r, R, i, l) {
+      let a = radians(i)
+      let k = r/parseFloat(R)
+
+      return {x: R*((1-k)*Math.cos(a) + l*k*Math.cos((1-k)*a/k)), y: R*((1-k)*Math.sin(a) - l*k*Math.sin((1-k)*a/k)), a}
+    }
+
+    let screenLog = document.querySelector('#screen-log');
+    document.addEventListener('mousemove', logKey);
+
+    function logKey(e) {
+      screenLog.innerText = `
+        Screen X/Y: ${e.screenX}, ${e.screenY}
+        Client X/Y: ${e.clientX}, ${e.clientY}`;
+    }
+
+  </script>
+ </body>
+</html>
